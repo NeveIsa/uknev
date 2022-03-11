@@ -134,7 +134,11 @@ def impute(tensor, rank=1, mask=np.ones(1), n_iters=100, tol=1e-7,verbose=True):
     recon_errors = []
     impute_errors = []
     
-    a,b,c,re,ie = impute_lowlevel(tensor,mode=0, rank=rank)
+    # initialize factors
+    if A.sum()==0 and B.sum()==0 and C.sum()==0:
+        a,b,c,re,ie = impute_lowlevel(tensor,mode=0, rank=rank)
+    else:
+        a,b,c = A,B,C
     
     last_re = np.inf
     
