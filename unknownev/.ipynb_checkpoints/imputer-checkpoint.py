@@ -21,7 +21,7 @@ def impute_lowlevel(tensor, rank, mode=1,  mask=np.ones(1), A=np.zeros(1), B=np.
     assert tensor.shape == mask.shape
         
     if A.sum()==0 and B.sum()==0 and C.sum()==0:
-        maxim = tensor.max()
+        maxim = tensor.max()  ### set the initial random factors to as big as half of the maximum observed entry
         dim0,dim1,dim2 = tensor.shape
         A=np.random.rand(dim0,rank)*maxim/2
         B=np.random.rand(dim1,rank)*maxim/2
@@ -126,7 +126,7 @@ def impute_lowlevel(tensor, rank, mode=1,  mask=np.ones(1), A=np.zeros(1), B=np.
     return A,B,C,rec_err, imp_err
 
 
-def impute(tensor, rank=1, mask=np.ones(1), n_iters=100, tol=1e-7,verbose=True):
+def impute(tensor, rank=1, mask=np.ones(1), n_iters=100, tol=1e-7,verbose=True, A=np.zeros(1), B=np.zeros(1),C=np.zeros(1)):
     """
         inputs:  tensor, rank=1, mask=np.ones(1), n_iters=100, tol=1e-7, verbose=True
         outputs: a,b,c, recon_errors, impute_error 
@@ -134,12 +134,19 @@ def impute(tensor, rank=1, mask=np.ones(1), n_iters=100, tol=1e-7,verbose=True):
     recon_errors = []
     impute_errors = []
     
-    a,b,c,re,ie = impute_lowlevel(tensor,mode=0, rank=rank)
+    # initialize factors
+    if A.sum()==0 and B.sum()==0 and C.sum()==0:
+        a,b,c,re,ie = impute_lowlevel(tensor,mode=0, rank=rank)
+    else:
+        a,b,c = A,B,C
     
     last_re = np.inf
     
-    tqdm_context = tqdm(range(n_iters), colour='#00FFD1', ncols=100)
-    
+    if verbose==True:
+        tqdm_context = tqdm(range(n_iters), colour='#00FFD1', ncols=100)
+    else: 
+        tqdm_context = range(n_iters)
+        
     break_count = 0
     
     for xyz in tqdm_context:
@@ -148,7 +155,7 @@ def impute(tensor, rank=1, mask=np.ones(1), n_iters=100, tol=1e-7,verbose=True):
         impute_errors.append(ie)
         
         
-        tqdm_context.set_postfix(re="{:.7f}".format(re), ie="{:.7f}".format(ie))
+        if verbose==True: tqdm_context.set_postfix(re="{:.7f}".format(re), ie="{:.7f}".format(ie))
         
         if last_re - re > tol:
             pass
