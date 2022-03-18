@@ -134,6 +134,7 @@ def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), s
         
         setblock(tensor_copy, block2set=reconstructed_block, block_id=blkid, block_size=block_shape, stride=stride)
         
-    error = tl.norm(  mask*(tensor - tensor_copy)  ) / tl.norm(mask * tensor)
+    inv_mask = 1 - mask
+    error = tl.norm(  inv_mask*(tensor - tensor_copy)  ) / tl.norm(inv_mask * tensor)
     
     return error
