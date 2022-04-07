@@ -84,7 +84,7 @@ def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), s
     
     tensor_copy = tl.copy(tensor)
     
-    blockIdMax = getblock(tensor)
+    blockIdMax = get_block_indices(tensor)
     
     if progressbar:
         blockIds = tqdm(range(blockIdMax), leave=False, desc=f"shape={block_shape} | stride={stride} | rank={block_rank}",ncols=100)

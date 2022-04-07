@@ -10,18 +10,10 @@ from unknownev import blockimputer as bi
 import pytest
 
 def test_getblock():
-    shape = (100,90,70)
-
-    # # # # #
-    # # # # #
-    # # # # #
-    # # # # #
-    # # # # #
-    # # # # #
-    
-    blockShape = (random.randint(1,100), random.randint(1,80), random.randint(1,70))
-    strideShape = (random.randint(1,20), random.randint(1,20), random.randint(1,20))
-
+    X,Y,Z = 10,10,10
+    shape = (X,Y,Z)
+    blockShape = (random.randint(1,X), random.randint(1,Y), random.randint(1,Z))
+    strideShape = (random.randint(1,X//2), random.randint(1,Y//2), random.randint(1,Z//2))
     
     tensor = tl.tensor(np.random.random(shape))
     totalblocks = bi.get_block_indices(tensor, block_size=blockShape, stride=strideShape)
@@ -32,3 +24,6 @@ def test_getblock():
         blockranges.append(str(r))
 
     assert len(set(blockranges))==totalblocks
+    assert len(set(blockranges))==len(blockranges)
+
+    print(blockranges)
