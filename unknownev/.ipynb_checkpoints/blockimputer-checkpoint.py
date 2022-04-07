@@ -40,7 +40,7 @@ def getblock(_img,  block_id=None, block_size=(50,50,5), stride=(10,10,5)):
         block_d_start = block_index_Z * stride_d
         block_d_end = min(block_d_start + block_size_d, d)
         
-        #print(block_h_start,block_h_end, block_w_start,block_w_end)
+        return f"{block_h_start}:{block_h_end}, {block_w_start}:{block_w_end}, {block_d_start}:{block_d_end}"
         block = _img[block_h_start:block_h_end, block_w_start:block_w_end, block_d_start:block_d_end]
 
         return block
@@ -133,8 +133,13 @@ def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), s
      
         
         setblock(tensor_copy, block2set=reconstructed_block, block_id=blkid, block_size=block_shape, stride=stride)
-        
-    inv_mask = 1 - mask
-    error = tl.norm(  inv_mask*(tensor - tensor_copy)  ) / tl.norm(inv_mask * tensor)
+
+
+    recerror = tl.norm(  mask*(tensor - tensor_copy)  ) / tl.norm(mask * tensor)
     
-    return error
+    inv_mask = 1 - mask
+    imperror = tl.norm(  inv_mask*(tensor - tensor_copy)  ) / tl.norm(inv_mask * tensor)
+
+    
+    
+    return recerror, imperror
