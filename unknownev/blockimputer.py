@@ -75,7 +75,7 @@ def factors2tensor(a,b,c):
         
     return t
         
-def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), stride=(10,10,3),progressbar=True, return_tensor=False):
+def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), stride=(10,10,3),progressbar=True, return_tensor=False, verbose=False):
     """
         Signature of decomposer callback --->
                 (w,f),e = imputer(tensor, mask, rank) 
@@ -85,6 +85,8 @@ def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), s
     tensor_copy = tl.copy(tensor)
     
     blockIdMax = get_block_indices(tensor)
+
+    if verbose: print("blockIdMax", blockIdMax)
     
     if progressbar:
         blockIds = tqdm(range(blockIdMax), leave=False, desc=f"shape={block_shape} | stride={stride} | rank={block_rank}",ncols=100)
