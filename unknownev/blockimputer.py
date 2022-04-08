@@ -84,7 +84,7 @@ def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), s
     
     tensor_copy = tl.copy(tensor)
     
-    blockIdMax = get_block_indices(tensor)
+    blockIdMax = get_block_indices(tensor, block_size=block_shape, stride=stride)
 
     if verbose: print("blockIdMax", blockIdMax)
     
