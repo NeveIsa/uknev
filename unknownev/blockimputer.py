@@ -75,7 +75,7 @@ def factors2tensor(a,b,c):
         
     return t
         
-def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), stride=(10,10,3),progressbar=True):
+def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), stride=(10,10,3),progressbar=True, return_tensor=False):
     """
         Signature of decomposer callback --->
                 (w,f),e = imputer(tensor, mask, rank) 
@@ -112,5 +112,7 @@ def blockimpute(tensor, mask, decomposer, block_rank=1, block_shape=(20,20,5), s
     imperror = tl.norm(  inv_mask*(tensor - tensor_copy)  ) / tl.norm(inv_mask * tensor)
 
     
-    
-    return recerror, imperror
+    if return_tensor==False:
+        return recerror, imperror
+    else:
+        return recerror, imperror, tensor_copy
